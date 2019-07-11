@@ -1,11 +1,7 @@
 <template>
   <div id="app">
-    <transition name='view'>
-      <keep-alive>
         <router-view />
-      </keep-alive>
-    </transition>
-    <Tabbar/>
+    <Tabbar v-if='show' />
   </div>
 </template>
 
@@ -33,13 +29,12 @@ export default {
 </script>
 
 <style lang="scss">
-
-.view-enter-active, .view-leave-active {
-  transition: opacity .2s ease-in;
-}
-.view-enter, .view-leave-to {
-  opacity: 0;
-}
+// .view-enter-active, .view-leave-active {
+//   transition: opacity 2s ease-in;
+// }
+// .view-enter, .view-leave-to {
+//   opacity: 0;
+// }
 </style>
 
 

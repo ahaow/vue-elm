@@ -18,7 +18,7 @@
             :key="val.id"
             @click="handleEntry(val.link)"
           >
-            <img :src="'https://fuss10.elemecdn.com/'+ val.image_url" :alt="item.description" />
+            <img v-lazy="'https://fuss10.elemecdn.com/'+ val.image_url" :alt="item.description" />
             <p>{{val.title}}</p>
           </div>
         </swiper-slide>
@@ -40,7 +40,7 @@
         <ul>
           <li v-for="(item) in ShopRestaurantsList" :key="item.id" class="business-item">
             <div class="avatar">
-              <img :src="'http://elm.cangdu.org/img/'+item.image_path" :alt='item.name' />
+              <img v-lazy="'http://elm.cangdu.org/img/'+item.image_path" :alt='item.name' />
             </div>
             <div class="content">
               <div class="name">

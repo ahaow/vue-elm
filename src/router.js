@@ -22,9 +22,6 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: () => import('./views/Search.vue'),
-      meta: {
-        tabbar: true
-      }
     },
     {
       path: '/order',
@@ -36,6 +33,13 @@ export default new Router({
       name: 'user',
       component: () => import('./views/User.vue')
     },
-    
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('./views/Login.vue'),
+      meta: {
+        tabbar: true
+      }
+    },
   ]
 })
