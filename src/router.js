@@ -19,6 +19,38 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/Home.vue')
     },
     {
+      path: '/business/:id',
+      name: 'business',
+      component: () => import(/* webpackChunkName: "about" */ './views/Business/Business.vue'),
+      redirect: {name: 'businessGoods'},
+      children: [
+        {
+          path: 'businessGoods',
+          name: 'businessGoods',
+          component: () => import('./views/Business/BusinessGoods.vue'),
+          meta: {
+            tabbar: true
+          }
+        }, {
+          path: 'businessRatings',
+          name: 'businessRatings',
+          component: () => import('./views/Business/BusinessRatings.vue'),
+          meta: {
+            tabbar: true
+          }
+        }, {
+          path: 'businessSeller',
+          name: 'businessSeller',
+          component: () => import('./views/Business/BusinessSeller.vue'),
+          meta: {
+            tabbar: true
+          }
+        }],
+      meta: {
+        tabbar: true
+      }
+    },
+    {
       path: '/search',
       name: 'search',
       component: () => import('./views/Search.vue'),

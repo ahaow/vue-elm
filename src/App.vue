@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-        <router-view />
-    <Tabbar v-if='show' />
+    <router-view />
+    <Tabbar v-if="show" />
   </div>
 </template>
 
@@ -13,18 +13,18 @@ export default {
   data() {
     return {
       show: true
-    }
+    };
   },
   components: {
     Tabbar
   },
   beforeUpdate() {
-    if(this.$router.history.current.meta.tabbar) {
+    if (this.$router.history.current.meta.tabbar) {
       this.show = false;
     } else {
       this.show = true;
     }
-  },
+  }
 };
 </script>
 

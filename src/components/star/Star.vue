@@ -49,6 +49,7 @@ export default {
 
 <style lang="scss">
 .star {
+  display: inline-block;
   font-size: 0;
   .star-item {
     display: inline-block;

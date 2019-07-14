@@ -35,12 +35,17 @@
         <i class="iconfont icon-shangjia"></i>
         <span>附近商家</span>
       </div>
-
       <div class="business-list">
         <ul>
-          <li v-for="(item) in ShopRestaurantsList" :key="item.id" class="business-item">
+          <router-link
+            tag="li"
+            :to="'/business/' + item.id"
+            v-for="(item) in ShopRestaurantsList"
+            :key="item.id"
+            class="business-item"
+          >
             <div class="avatar">
-              <img v-lazy="'http://elm.cangdu.org/img/'+item.image_path" :alt='item.name' />
+              <img v-lazy="'http://elm.cangdu.org/img/'+item.image_path" :alt="item.name" />
             </div>
             <div class="content">
               <div class="name">
@@ -76,7 +81,7 @@
                 </section>
               </h5>
             </div>
-          </li>
+          </router-link>
         </ul>
       </div>
     </div>
