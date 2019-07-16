@@ -64,7 +64,6 @@
 
 <script>
 import Star from "./../../components/star/Star";
-import { business_api } from "./../../api/index";
 import BScroll from "better-scroll";
 
 export default {
@@ -86,26 +85,19 @@ export default {
   methods: {
     // 获取评价分数
     getRatingsScores(id) {
-      this.axios
-        .get(`${business_api.ratings_scores}${id}/ratings/scores`)
-        .then(res => {
-          console.log(res);
-          this.scoreObj = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+
+      this.$api.BusinessAjax.getRatingsScores(id).then(res => {
+         this.scoreObj = res.data;
+      }).catch(err => {
+        console.log(err);
+      })
     },
     getRestaurants(id) {
-      this.axios
-        .get(`${business_api.restaurants}${id}/ratings`)
-        .then(res => {
-          this.restaurants = res.data;
-          this.$nextTick(() => {});
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.$api.BusinessAjax.getRestaurants(id).then(res => {
+        this.restaurants = res.data;
+      }).catch(err => {
+        console.log(err);
+      })
     },
     _initScroll() {
       this.BusinessRatings = new BScroll(this.$refs.BusinessRatings, {
@@ -117,10 +109,8 @@ export default {
   created() {
     console.log(this.$route);
     let id = this.$route.params.id;
-
     this.getRatingsScores(id);
     this.getRestaurants(id);
-
     this.$nextTick(() => {
       this._initScroll();
     });

@@ -14,32 +14,26 @@
       </form>
     </section>
 
-    <section class="search-content" v-if='contentShow'>
-        <h5>商家</h5>
-        <ul class="search-list">
-            <li 
-              v-for='item in searchList'
-              :key="item.id"
-              class="search-item"
-            >
-                <div class="search-item-avatar">
-                  <img :src="'http://elm.cangdu.org/img/'+item.image_path" :alt='item.name' />
-                </div>
-                <div class="search-item-info">
-                    <p>{{item.name}}</p>
-                    <p>月售{{item.recent_order_num}}单</p>
-                    <p>¥{{item.float_minimum_order_amount}}元起送/{{item.piecewise_agent_fee.tips}}</p>
-                </div>
-            </li>
-        </ul>
+    <section class="search-content" v-if="contentShow">
+      <h5>商家</h5>
+      <ul class="search-list">
+        <li v-for="item in searchList" :key="item.id" class="search-item">
+          <div class="search-item-avatar">
+            <img :src="'http://elm.cangdu.org/img/'+item.image_path" :alt="item.name" />
+          </div>
+          <div class="search-item-info">
+            <p>{{item.name}}</p>
+            <p>月售{{item.recent_order_num}}单</p>
+            <p>¥{{item.float_minimum_order_amount}}元起送/{{item.piecewise_agent_fee.tips}}</p>
+          </div>
+        </li>
+      </ul>
     </section>
-    <section v-if='searchNone' class="search_none">很抱歉！无搜索结果</section>
-
+    <section v-if="searchNone" class="search_none">很抱歉！无搜索结果</section>
   </div>
 </template>
 
 <script>
-import { search_api } from "./../api/index";
 
 export default {
   name: "search",
@@ -48,7 +42,7 @@ export default {
       searchVal: "", // 搜索关键字
       searchNone: false, // 控制 `没有搜索结果` 的 box 显示隐藏
       contentShow: false, // 控制 `有搜索结果` 的 box 显示隐藏
-      searchList: [], // 搜索列表
+      searchList: [] // 搜索列表
     };
   },
   methods: {
@@ -56,27 +50,26 @@ export default {
       this.getRestaurantsList(this.searchVal);
     },
     getRestaurantsList(searchVal) {
-        this.axios.get(`${search_api.restaurants}?geohash=31.22967,121.4762&keyword=${searchVal}`,{}).then(res => {
-            console.log(res);
-
-            // 假如没有搜索结果
-            if(res.data.length <= 0) {
-                this.searchNone = true;
-            } else {
-                this.contentShow = true;
-                this.searchList = res.data;
-            }
-        }).catch(err => {
-            console.log(err);
+      this.$api.SearchAjax.searchList(searchVal).then(res => {
+          // 假如没有搜索结果
+          if (res.data.length <= 0) {
+            this.searchNone = true;
+          } else {
+            this.contentShow = true;
+            this.searchList = res.data;
+          }
         })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   updated() {
-      console.log(this.searchVal)
-      if(this.searchVal === '') {
-        this.contentShow = false;
-        this.searchNone = false;
-      }
+    console.log(this.searchVal);
+    if (this.searchVal === "") {
+      this.contentShow = false;
+      this.searchNone = false;
+    }
   }
 };
 </script>
@@ -126,47 +119,46 @@ export default {
   }
   .search-content {
     h5 {
-        padding: .341333rem;
+      padding: 0.341333rem;
     }
     .search-list {
-        background-color: #fff;
-        padding: .170667rem;
-        margin-bottom: .853333rem;
-        .search-item {
-            margin-bottom: .170667rem;
-            @include clearfloat;
-            padding-bottom: .256rem;
-            border-bottom: 1px solid #e0e0e0; 
-            .search-item-avatar {
-                float: left;
-                width: 1.706665rem;
-                height: 1.706665rem;
-              img {
-                width: 100%;
-                height: 100%;
-              }
-            }
-            .search-item-info {
-                float: left;
-                width: 75%;
-                margin-left: .341333rem;
-                p {
-                    margin-bottom: .341333rem;
-                    &:nth-child(3) {
-                      margin-bottom: 0;
-                    }
-                    
-                }
-            }
+      background-color: #fff;
+      padding: 0.170667rem;
+      margin-bottom: 0.853333rem;
+      .search-item {
+        margin-bottom: 0.170667rem;
+        @include clearfloat;
+        padding-bottom: 0.256rem;
+        border-bottom: 1px solid #e0e0e0;
+        .search-item-avatar {
+          float: left;
+          width: 1.706665rem;
+          height: 1.706665rem;
+          img {
+            width: 100%;
+            height: 100%;
+          }
         }
+        .search-item-info {
+          float: left;
+          width: 75%;
+          margin-left: 0.341333rem;
+          p {
+            margin-bottom: 0.341333rem;
+            &:nth-child(3) {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
     }
   }
   .search_none {
-      margin-top: .170667rem;
-      width: 100%;
-      padding: .341333rem .170667rem;
-      background-color: #fff;
-      text-align: center;
+    margin-top: 0.170667rem;
+    width: 100%;
+    padding: 0.341333rem 0.170667rem;
+    background-color: #fff;
+    text-align: center;
   }
 }
 </style>

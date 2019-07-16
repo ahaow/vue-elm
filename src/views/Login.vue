@@ -17,14 +17,11 @@
       <div class="form-li">
         <input type="number" v-model="code" class="input-code" name="code" placeholder="验证码" />
         <div class="code">
-          <img
-            :src="codeImg"
-            alt='验证码'
-          />
+          <img :src="codeImg" alt="验证码" />
         </div>
         <div class="change_img">
           <p>看不清</p>
-          <p @click='getCode'>换一张</p>
+          <p @click="getCode">换一张</p>
         </div>
       </div>
     </section>
@@ -43,7 +40,6 @@
 </template>
 
 <script>
-import { login_api } from "./../api/index";
 import Toast from "./../components/toast/Toast";
 
 export default {
@@ -85,26 +81,23 @@ export default {
         return;
       } else {
         console.log("ajax");
-        this.axios.post(login_api.login,{
-            username: this.username,
-            password: this.psw,
-            captcha_code: this.code
-        }).then(res => {
-            console.log(res);
-            // 登录成功
-            if(res.status === 200) {
-                window.localStorage.setItem('id',JSON.stringify(res.data.id));
-                this.imgUrl = null;
-                this.handleToastInfo("登录成功");
-                setTimeout(() => {
-                    this.$router.replace('/user');
-                }, 1500);
-            }
-        }).catch(err => {
-            console.log(err);
+        this.$api.LoginAjax.loginIn({
+          username: this.username,
+          password: this.psw,
+          captcha_code: this.code
         })
-
-
+          .then(res => {
+            console.log(res);
+            window.localStorage.setItem("id", JSON.stringify(res.data.id));
+            this.imgUrl = null;
+            this.handleToastInfo("登录成功");
+            setTimeout(() => {
+              this.$router.replace("/user");
+            }, 1500);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     },
     handleToastInfo(data) {
@@ -116,18 +109,17 @@ export default {
         this.toastShow = false;
       }, 1500);
     },
+    // 获取验证码
     getCode() {
-      // 获取验证码
-      this.axios
-        .post(login_api.captchas)
+      this.$api.LoginAjax.getCaptchas()
         .then(res => {
           console.log(res);
-            if(res.data.status === 1) {
-                this.codeImg = res.data.code
-            }
+          if (res.data.status === 1) {
+            this.codeImg = res.data.code;
+          }
         })
         .catch(err => {
-          conole.log(err);
+          console.log(err);
         });
     }
   },

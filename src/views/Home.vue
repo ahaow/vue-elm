@@ -91,7 +91,6 @@
 <script>
 import "swiper/dist/css/swiper.css";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
-import { home_api } from "./../api/index";
 import Star from "./../components/star/Star";
 
 export default {
@@ -123,32 +122,22 @@ export default {
   methods: {
     // 获取食品分类列表
     getEntryList() {
-      this.axios
-        .get(home_api.index_entry, {})
-        .then(res => {
-          this.entryList = this.arrTrans(8, res.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.$api.HomeAjax.foodsList().then(res => {
+      console.log(res);
+        this.entryList = this.arrTrans(8, res.data);
+      }).catch(err => {
+        console.log(err);
+      })
     },
 
     // 获取商铺列表
     getShopRestaurants() {
-      this.axios
-        .get(
-          `${home_api.index_restaurants}?latitude=${this.latitude}&longitude=${this.longitude}`,
-          {}
-        )
-        .then(res => {
-          if (res.status === 200) {
-            console.log(res);
-            this.ShopRestaurantsList = res.data;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.$api.HomeAjax.shoppingList(this.latitude,this.longitude).then(res => {
+        console.log(res)
+        this.ShopRestaurantsList = res.data;
+      }).catch(err => {
+        console.log(err)
+      })
     },
 
     arrTrans(num, arr) {

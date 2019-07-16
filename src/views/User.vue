@@ -82,8 +82,6 @@
 </template>
 
 <script>
-import { user_api } from './../api/index';
-
 export default {
   name: "user",
   data() {
@@ -94,11 +92,12 @@ export default {
   },
   methods: {
     handleGetUserInfo() {
-      this.axios.get(user_api.getUser).then(res => {
-        console.log(res);
+      this.$api.UserAjax.getUser().then(res => {
         this.userinfo = res.data;
       }).catch(err => {
+        console.log(err)
       })
+      
     }
   },
   beforeCreate() {

@@ -6,36 +6,29 @@
       </div>
       <div class="business-header-content">
         <div class="header-avatar">
-          <img
-            src="http://static.galileo.xiaojukeji.com/static/tms/seller_avatar_256px.jpg"
-            alt="avatar"
-            title="ahaow"
-          />
+          <img :src="'https://elm.cangdu.org/img/' + shopObj.image_path" alt="avatar" title="ahaow" />
         </div>
         <div class="header-content">
           <div class="title">
             <div class="brand">品牌</div>
-            <div class="name">粥品香坊（回龙观）</div>
+            <div class="name">{{shopObj.name}}</div>
           </div>
-          <div class="description">蜂鸟专送 / 38 分钟送达</div>
+          <div
+            class="description"
+            v-if="shopObj.delivery_mode"
+          >{{shopObj.delivery_mode.text}} / 38 分钟送达</div>
           <div class="support">
-            在线支付满28减5
+            起送价{{shopObj.float_minimum_order_amount}}元
             <span class="count">5个 ></span>
           </div>
         </div>
       </div>
       <div class="bulletin-wrapper">
         <span class="bulletin-title">公告</span>
-        <span
-          class="bulletin-text"
-        >粥品香坊其烹饪粥料的秘方源于中国千年古法，在融和现代制作工艺，由世界烹饪大师屈浩先生领衔研发。坚守纯天然、0添加的良心品质深得消费者青睐，发展至今成为粥类的引领品牌。是2008年奥运会和2013年园博会指定餐饮服务商。</span>
-        <i>></i>
+        <span class="bulletin-text">{{shopObj.promotion_info}}</span>
       </div>
       <div class="background">
-        <img
-          src="http://static.galileo.xiaojukeji.com/static/tms/seller_avatar_256px.jpg"
-          alt="background-image"
-        />
+        <img :src="'https://elm.cangdu.org/img/' + shopObj.image_path" alt="background-image" />
       </div>
     </header>
     <div class="tab">
@@ -44,16 +37,18 @@
       </div>
       <div class="tab-item">
         <router-link to="businessRatings">评论</router-link>
-        </div>
+      </div>
       <div class="tab-item">
         <router-link to="businessSeller">商家</router-link>
       </div>
     </div>
     <div>
       <keep-alive>
-        <router-view></router-view>
+        <router-view :shopObj="shopObj"></router-view>
       </keep-alive>
     </div>
+
+    
   </div>
 </template>
 
@@ -61,14 +56,32 @@
 <script>
 export default {
   name: "business",
+  data() {
+    return {
+      shopObj: {} // 商家详情信息
+    };
+  },
   methods: {
     handleBack() {
-      this.$router.replace('/home');
+      this.$router.replace("/home");
+    },
+    getShopDetail(id) {
+      this.$api.BusinessAjax.getShopDetal(id)
+        .then(res => {
+          this.shopObj = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
+
   created() {
-    console.log(this.$route);
-    console.log(this.$router);
+    let id = this.$route.params.id;
+    this.getShopDetail(id);
+  },
+  beforeUpdate() {
+    console.log(this.shopObj);
   }
 };
 </script>
@@ -219,8 +232,12 @@ export default {
       a {
         color: #000;
         text-decoration: none;
+        &.active {
+          color: red;
+        }
       }
     }
   }
+  
 }
 </style>
