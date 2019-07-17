@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import store from './store/index'
 import './assets/scss/index.scss';
 import './assets/js/index';
 import api from './api/index';
@@ -15,8 +15,15 @@ Vue.use(VueLazyload,{
 Vue.prototype.$api = api;
 Vue.config.productionTip = false
 
+
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  beforeMount() {
+    // 当用户刷新时，将localStorage中的buyCart 存储在 vuex里面
+    if(JSON.stringify(this.$store.state.cartList) === "{}") {
+      this.$store.commit('REFRESH_CART');
+    }
+  },
 }).$mount('#app')

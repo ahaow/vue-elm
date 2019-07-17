@@ -43,9 +43,7 @@
       </div>
     </div>
     <div>
-      <keep-alive>
         <router-view :shopObj="shopObj"></router-view>
-      </keep-alive>
     </div>
 
     
@@ -81,7 +79,6 @@ export default {
     this.getShopDetail(id);
   },
   beforeUpdate() {
-    console.log(this.shopObj);
   }
 };
 </script>

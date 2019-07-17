@@ -29,7 +29,7 @@
                   height="100%"
                 />
               </div>
-              <div class="content">
+              <div class="content" >
                 <h2 class="name" v-if="food.name">{{food.name}}</h2>
                 <p class="desc">{{food.description}}</p>
                 <div class="extra">
@@ -39,6 +39,18 @@
                 <div class="price">
                   <span class="now">¥{{food.satisfy_rate}}</span>
                   <!-- <span class="old">1</span> -->
+                </div>
+              </div>
+              <!-- <cartcontrol :food='food' /> -->
+              <div class="cartcontrol-wrapper">
+                <div class="cartcontrol">
+                  <div class="cart-decrease">
+                    <i class="iconfont icon-jianhao"></i>
+                  </div>
+                  <div class="cart-count">{{food.count}}</div>
+                  <div class="cart-add" @click="handleAddFood(item.id,food.item_id,food)">
+                    <i class="iconfont icon-wuuiconxiangjifangda"></i>
+                  </div>
                 </div>
               </div>
             </li>
@@ -72,29 +84,12 @@
           </div>
           <div class="list-content">
             <ul>
-              <li class="food">
-                <span class="name">葱油饼</span>
-                <span class="price">¥20</span>
-              </li>
-              <li class="food">
-                <span class="name">葱油饼</span>
-                <span class="price">¥20</span>
-              </li>
-              <li class="food">
-                <span class="name">葱油饼</span>
-                <span class="price">¥20</span>
-              </li>
-              <li class="food">
-                <span class="name">葱油饼</span>
-                <span class="price">¥20</span>
-              </li>
-              <li class="food">
-                <span class="name">葱油饼</span>
-                <span class="price">¥20</span>
-              </li>
-              <li class="food">
-                <span class="name">葱油饼</span>
-                <span class="price">¥20</span>
+              <li
+                v-for='cart in cartArr'
+                :key="cart.id" 
+                class="food">
+                <span class="name">{{cart.name}}</span>
+                <span class="price">¥{{cart.price}}</span>
               </li>
             </ul>
           </div>
@@ -107,10 +102,16 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import BScroll from "better-scroll";
+import {mapState, mapMutations} from 'vuex'
+import cartcontrol from './../../components/cartcontrol/cartcontrol';
 
 export default {
   name: "BusinessGoods",
+  components: {
+    cartcontrol
+  },
   props: {
     shopObj: {
       type: Object
@@ -122,10 +123,13 @@ export default {
       listHeight: [],
       scrollY: 0,
       StartPrice: false, // 价格 是否 到达起步价
-      carShopShow: false // 购物车 显示 隐藏
+      carShopShow: false, // 购物车 显示 隐藏
+      cartArr: [], // 对应商家的点餐商品
+      foodA: null,
     };
   },
   computed: {
+    ...mapState['cartList'],
     currentIndex() {
       for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i];
@@ -138,6 +142,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['ADD_CART']),
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
@@ -175,16 +180,47 @@ export default {
       this.foodsScroll.scrollToElement(el, 300);
     },
 
+    // 添加食物到购物车
+    handleAddFood(itemid, foodid, food) {
+      console.log(food);
+      food.count++;
+
+      let businessId = this.$route.params.id;
+      console.log(businessId)
+      this.ADD_CART({businessId,itemid,foodid,food});
+    },
+
     // 显示 隐藏 购物车
     handleCatShow() {
       let carShopShow = this.carShopShow;
       this.carShopShow = !carShopShow;
+    },
+    // 获取到对应商家 选择的 商品
+    getBusinessFood(cartList,id) {
+      for(let val in cartList) {
+      if(val === id) {
+        for(let item in cartList[val]) {
+          for(let i in cartList[val][item]) {
+            this.cartArr.push(cartList[val][item][i]);
+          }
+        }
+      }
     }
+    }
+
   },
   created() {
+    let cartList = this.$store.state.cartList;
     let id = this.$route.params.id;
+    this.getBusinessFood(cartList,id)
+
     this.$api.BusinessAjax.getMenu(id)
       .then(res => {
+        res.data.forEach(item => {
+          item.foods.forEach(val => {
+            Vue.set(val,'count',1)
+          })
+        })
         this.goods = res.data;
         this.$nextTick(() => {
           this._initScroll();
@@ -200,33 +236,23 @@ export default {
 </script>
 
 <style lang="scss">
-
-// .fade-enter-active, .fade-leave-active {
-//   transition: all .5s ease;
-//   transform: translate3d(0,0,0);
-// }
-// .fade-enter, .fade-leave-to {
-//   transform: translate3d(0,130%,0);  
-//   transition: all .5s ease;
-// }
-
 .fade-enter {
-  transform: translate3d(0,100%,0); 
+  transform: translate3d(0, 100%, 0);
 }
 .fade-enter-active {
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 .fade-enter-to {
-  transform: translate3d(0,0,0); 
+  transform: translate3d(0, 0, 0);
 }
 .fade-leave {
-  transform: translate3d(0,0,0); 
+  transform: translate3d(0, 0, 0);
 }
 .fade-leave-active {
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 .fade-leave-to {
-  transform: translate3d(0,100%,0); 
+  transform: translate3d(0, 100%, 0);
 }
 
 .business-goods {
@@ -276,6 +302,7 @@ export default {
         background-color: #f3f5f7;
       }
       .food-item {
+        position: relative;
         display: flex;
         margin: 0.48rem;
         padding-bottom: 0.28rem;
@@ -286,8 +313,6 @@ export default {
           margin-right: 0.38rem;
         }
         .content {
-          position: relative;
-          flex: 1;
           .name {
             margin: 2px 0 8px 0;
             height: 0.38rem;
@@ -323,6 +348,39 @@ export default {
               text-decoration: line-through;
               font-size: 10px;
               color: rgba(147, 153, 159, 1);
+            }
+          }
+        }
+        .cartcontrol-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          .cartcontrol {
+            font-size: 0;
+            .cart-decrease {
+              display: inline-block;
+              padding: 0.16rem;
+              line-height: 0.64rem;
+              color: #00a0dc;
+              transition: all 0.4s linear;
+            }
+            .cart-count {
+              display: inline-block;
+              vertical-align: top;
+              width: 0.32rem;
+              padding-top: 0.16rem;
+              line-height: 0.64rem;
+              text-align: center;
+              font-size: 12px;
+              color: #93999f;
+            }
+            .cart-add {
+              display: inline-block;
+              padding: 0.16rem;
+              line-height: 0.64rem;
+              color: #00a0dc;
+              -webkit-transition: all 0.4s linear;
+              transition: all 0.4s linear;
             }
           }
         }
