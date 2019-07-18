@@ -51,6 +51,14 @@ export default new Router({
       }
     },
     {
+      path: '/confirmOrder',
+      name: 'confirmOrder',
+      component: () => import('./views/ConfirmOrder.vue'),
+      meta: {
+        tabbar: true
+      }
+    },
+    {
       path: '/search',
       name: 'search',
       component: () => import('./views/Search.vue'),

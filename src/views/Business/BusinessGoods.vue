@@ -4,7 +4,7 @@
       <ul>
         <li
           class="menu-item"
-          :class="{'current': currentIndex === index}"
+          :class="{'current': currentIndex == index}"
           v-for="(item,index) in goods"
           :key="index"
           @click="selectMenu(index,$event)"
@@ -16,6 +16,7 @@
         </li>
       </ul>
     </div>
+
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
         <li class="food-list-hook" v-for="(item,index) in goods" :key="index">
@@ -29,7 +30,7 @@
                   height="100%"
                 />
               </div>
-              <div class="content" >
+              <div class="content">
                 <h2 class="name" v-if="food.name">{{food.name}}</h2>
                 <p class="desc">{{food.description}}</p>
                 <div class="extra">
@@ -44,10 +45,16 @@
               <!-- <cartcontrol :food='food' /> -->
               <div class="cartcontrol-wrapper">
                 <div class="cartcontrol">
-                  <div class="cart-decrease">
-                    <i class="iconfont icon-jianhao"></i>
-                  </div>
-                  <div class="cart-count">{{food.count}}</div>
+                  <transition name="move">
+                    <div
+                      class="cart-decrease"
+                      @click="handleDecreaseFood(item.id,food.item_id,food)"
+                      v-if="food.count > 0"
+                    >
+                      <i class="iconfont icon-jianhao"></i>
+                    </div>
+                  </transition>
+                  <div class="cart-count" v-if="food.count > 0">{{food.count}}</div>
                   <div class="cart-add" @click="handleAddFood(item.id,food.item_id,food)">
                     <i class="iconfont icon-wuuiconxiangjifangda"></i>
                   </div>
@@ -58,54 +65,59 @@
         </li>
       </ul>
     </div>
+
     <div class="shopcat">
       <div class="content">
         <div class="content-left" @click="handleCatShow">
           <div class="logo-wrapper">
-            <div class="logo">
-              <i class="iconfont icon-gouwucheman"></i>
+            <div :class="businessListTotalNum ? 'logo active' : 'logo'">
+              <i
+                :class="businessListTotalNum ? 'iconfont icon-gouwucheman active' : 'iconfont icon-gouwucheman'"
+              ></i>
+              <div class="num" v-if="businessListTotalNum">{{businessListTotalNum}}</div>
             </div>
           </div>
-          <div class="cat-price">¥0</div>
+          <div
+            :class="businessListTotalPrice ? 'cat-price active' : 'cat-price'"
+          >¥{{businessListTotalPrice}}</div>
           <div class="desc">另需配送费¥{{shopObj.float_delivery_fee}}元</div>
         </div>
         <div class="content-right">
           <div
-            class="pay"
-            :class="StartPrice ? 'enough' : 'not-enough'"
-          >{{StartPrice ? '去结算' : `¥${shopObj.float_minimum_order_amount}元起送`}}</div>
+            v-if="!startPriceFlag"
+            class="pay not-enough"
+          >{{`¥${shopObj.float_minimum_order_amount}元起送`}}</div>
+          <div v-if="startPriceFlag" class="pay enough" @click="handleGoConfirmOrder">去结算</div>
         </div>
       </div>
+
       <transition name="fade">
-        <div class="shopcart-list" v-if="carShopShow">
+        <div class="shopcart-list" v-if="carShopShow && businessList.length > 0">
           <div class="list-header">
             <h2 class="title">购物车</h2>
             <span class="empty">清空</span>
           </div>
           <div class="list-content">
             <ul>
-              <li
-                v-for='cart in cartArr'
-                :key="cart.id" 
-                class="food">
+              <li v-for="cart in businessList" :key="cart.item_id" class="food">
                 <span class="name">{{cart.name}}</span>
-                <span class="price">¥{{cart.price}}</span>
+                <span class="price">¥{{cart.satisfy_rate * cart.num}}</span>
+                <span class="count">{{cart.num}}</span>
               </li>
             </ul>
           </div>
         </div>
       </transition>
-
-      <div class="shopcart-mask" v-show="carShopShow"></div>
+      <div class="shopcart-mask" v-show="carShopShow && businessList.length > 0"></div>
     </div>
   </div>
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 import BScroll from "better-scroll";
-import {mapState, mapMutations} from 'vuex'
-import cartcontrol from './../../components/cartcontrol/cartcontrol';
+import { mapState, mapMutations } from "vuex";
+import cartcontrol from "./../../components/cartcontrol/cartcontrol";
 
 export default {
   name: "BusinessGoods",
@@ -122,18 +134,50 @@ export default {
       goods: [],
       listHeight: [],
       scrollY: 0,
-      StartPrice: false, // 价格 是否 到达起步价
       carShopShow: false, // 购物车 显示 隐藏
       cartArr: [], // 对应商家的点餐商品
-      foodA: null,
+      foodA: null
     };
   },
   computed: {
-    ...mapState['cartList'],
+    ...mapState["cartList"],
+    businessList() {
+      return this.$store.state.businessList;
+    },
+    // 购物车总价
+    businessListTotalPrice() {
+      let businessList = this.$store.state.businessList;
+      let totalPrice = 0;
+      businessList.forEach(item => {
+        totalPrice += item.satisfy_rate * item.num;
+      });
+      return totalPrice;
+    },
+    // 购物车数量
+    businessListTotalNum() {
+      let businessList = this.$store.state.businessList;
+      let totalNum = 0;
+      businessList.forEach(item => {
+        totalNum += item.num;
+      });
+      return totalNum;
+    },
+    startPriceFlag() {
+      let startPrice = this.$props.shopObj.float_minimum_order_amount;
+      let businessList = this.$store.state.businessList;
+      let totalPrice = 0;
+      businessList.forEach(item => {
+        totalPrice += item.satisfy_rate * item.num;
+      });
+      console.log(totalPrice, startPrice);
+      return totalPrice >= startPrice;
+    },
+
     currentIndex() {
       for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i];
         let height2 = this.listHeight[i + 1];
+        console.log(this.scrollY);
         if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
           return i;
         }
@@ -142,7 +186,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['ADD_CART']),
+    ...mapMutations(["ADD_CART", "DECREASE_CART", "BUSINESS_CART"]),
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
@@ -182,12 +226,21 @@ export default {
 
     // 添加食物到购物车
     handleAddFood(itemid, foodid, food) {
-      console.log(food);
       food.count++;
-
       let businessId = this.$route.params.id;
-      console.log(businessId)
-      this.ADD_CART({businessId,itemid,foodid,food});
+      this.ADD_CART({ businessId, itemid, foodid, food });
+      this.BUSINESS_CART(businessId);
+    },
+
+    // 减少食物到购物车
+    handleDecreaseFood(itemid, foodid, food) {
+      let businessId = this.$route.params.id;
+      if (food.count > 0) {
+        // 执行操作
+        food.count--;
+      }
+      this.DECREASE_CART({ businessId, itemid, foodid, food });
+      this.BUSINESS_CART(businessId);
     },
 
     // 显示 隐藏 购物车
@@ -195,36 +248,47 @@ export default {
       let carShopShow = this.carShopShow;
       this.carShopShow = !carShopShow;
     },
-    // 获取到对应商家 选择的 商品
-    getBusinessFood(cartList,id) {
-      for(let val in cartList) {
-      if(val === id) {
-        for(let item in cartList[val]) {
-          for(let i in cartList[val][item]) {
-            this.cartArr.push(cartList[val][item][i]);
+    // 匹配购物车数量
+    cartCount() {
+      let goods = this.goods;
+      let businessList = this.$store.state.businessList;
+      for (let i = 0; i < goods.length; i++) {
+        let goodItem = goods[i];
+        for (let i = 0; i < goodItem.foods.length; i++) {
+          let foodItem = goodItem.foods[i];
+          for (let j = 0; j < businessList.length; j++) {
+            if (foodItem.item_id === businessList[j].item_id) {
+              foodItem.count = businessList[j].num;
+            }
           }
         }
       }
+      this.goods = { ...goods };
+    },
+    // 去结算 跳转到结算页面
+    handleGoConfirmOrder() {
+      console.log(111);
+      this.$router.push("/confirmOrder");
     }
-    }
-
   },
   created() {
-    let cartList = this.$store.state.cartList;
+    // let cartList = this.$store.state.cartList;
     let id = this.$route.params.id;
-    this.getBusinessFood(cartList,id)
+    // this.getBusinessFood(cartList, id);
+    this.BUSINESS_CART(id);
 
     this.$api.BusinessAjax.getMenu(id)
       .then(res => {
         res.data.forEach(item => {
           item.foods.forEach(val => {
-            Vue.set(val,'count',1)
-          })
-        })
+            Vue.set(val, "count", 0);
+          });
+        });
         this.goods = res.data;
         this.$nextTick(() => {
           this._initScroll();
           this._calculateHeight();
+          this.cartCount();
         });
       })
       .catch(err => {
@@ -236,6 +300,33 @@ export default {
 </script>
 
 <style lang="scss">
+.move-enter {
+  opacity: 0;
+  transform: rotate(0);
+  transform: translate3d(24px, 0, 0);
+}
+.move-enter-active {
+  transition: all 0.5s ease-in;
+}
+.move-enter-to {
+  opacity: 1;
+  transform: rotate(180deg);
+  transform: translate3d(0, 0, 0);
+}
+.move-leave {
+  opacity: 1;
+  transform: rotate(180deg);
+  transform: translate3d(0, 0, 0);
+}
+.move-leave-enter {
+  transition: all 0.5s ease-in;
+}
+.move-leave-to {
+  opacity: 0;
+  transform: rotate(0);
+  transform: translate3d(24px, 0, 0);
+}
+
 .fade-enter {
   transform: translate3d(0, 100%, 0);
 }
@@ -415,6 +506,7 @@ export default {
           text-align: center;
           z-index: 99;
           .logo {
+            position: relative;
             width: 80%;
             height: 80%;
             margin-left: 10%;
@@ -422,10 +514,31 @@ export default {
             border-radius: 50%;
             background: #2b343c;
             text-align: center;
+            &.active {
+              background: #00a0dc;
+            }
             i {
               font-size: 28px;
               line-height: 1.5;
               color: hsla(0, 0%, 100%, 0.4);
+              &.active {
+                color: #fff;
+              }
+            }
+            .num {
+              position: absolute;
+              top: -10px;
+              right: -5px;
+              width: 0.64rem;
+              height: 0.42rem;
+              line-height: 0.42rem;
+              text-align: center;
+              border-radius: 16px;
+              font-size: 9px;
+              font-weight: 700;
+              color: #fff;
+              background-color: #f01414;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
             }
           }
         }
@@ -436,10 +549,13 @@ export default {
           font-size: 16px;
           font-weight: 700;
           color: hsla(0, 0%, 100%, 0.4);
+          &.active {
+            color: #fff;
+          }
         }
         .desc {
           position: absolute;
-          left: 3.8rem;
+          left: 4.2rem;
           top: 0.426667rem;
           font-size: 12px;
           color: hsla(0, 0%, 100%, 0.4);
@@ -455,7 +571,13 @@ export default {
           font-size: 12px;
           font-weight: 700;
           color: hsla(0, 0%, 100%, 0.4);
-          background: #2b333b;
+          &.not-enough {
+            background: #2b333b;
+          }
+          &.enough {
+            background: #00b43c;
+            color: #fff;
+          }
         }
       }
     }
@@ -502,6 +624,10 @@ export default {
               font-size: 14px;
               font-weight: 700;
               color: #f01414;
+            }
+            .count {
+              position: absolute;
+              right: 1rem;
             }
           }
         }
