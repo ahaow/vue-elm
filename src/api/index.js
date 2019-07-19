@@ -5,13 +5,14 @@ import SearchAjax from './api_search'
 import LoginAjax from './api_login';
 import UserAjax from './api_user';
 import BusinessAjax from './api_business';
-
+import AddressAjax from './api_addresses';
 const api = {
     HomeAjax,
     SearchAjax,
     LoginAjax,
     UserAjax,
-    BusinessAjax
+    BusinessAjax,
+    AddressAjax
 }
 
 export default api;

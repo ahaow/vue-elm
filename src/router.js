@@ -59,6 +59,14 @@ export default new Router({
       }
     },
     {
+      path: '/addresspage',
+      name: 'addresspage',
+      component: () => import('./views/AddressPage/AddressPage.vue'),
+      meta: {
+        tabbar: true
+      }
+    },
+    {
       path: '/search',
       name: 'search',
       component: () => import('./views/Search.vue'),

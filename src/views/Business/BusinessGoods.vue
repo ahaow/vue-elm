@@ -267,8 +267,14 @@ export default {
     },
     // 去结算 跳转到结算页面
     handleGoConfirmOrder() {
-      console.log(111);
-      this.$router.push("/confirmOrder");
+      console.log(this.$props.shopObj.float_delivery_fee)
+      this.$router.push({
+        path: '/confirmOrder',
+        query: {
+          psf: this.$props.shopObj.float_delivery_fee
+        }
+      })
+
     }
   },
   created() {
