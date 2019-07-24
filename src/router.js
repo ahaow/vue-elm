@@ -59,9 +59,19 @@ export default new Router({
       }
     },
     {
-      path: '/addresspage',
-      name: 'addresspage',
-      component: () => import('./views/AddressPage/AddressPage.vue'),
+      path: '/chooseAddress',
+      name: 'chooseAddress',
+      component: () => import('./views/ChooseAddress/ChooseAddress.vue'),
+      children: [
+        {
+          path: 'addAddress',
+          name: 'addAddress',
+          component: () => import('./views/ChooseAddress/Addaddress.vue'),
+          meta: {
+            tabbar: true
+          }
+        }
+      ],
       meta: {
         tabbar: true
       }

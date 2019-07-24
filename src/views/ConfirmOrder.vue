@@ -107,7 +107,7 @@
       <p>确认下单</p>
     </div>
 
-    <transition name="fade">
+    <transition name="">
       <div class="cover-mask" @click="handleChangeCoverHide" v-if="coverShow"></div>
     </transition>
 
@@ -302,7 +302,7 @@ export default {
 
     // 前往地址选择页面
     handleGoAddress() {
-      this.$router.push('/addresspage');
+      this.$router.push('/chooseAddress');
     }
     
   },
@@ -313,8 +313,6 @@ export default {
     this.$api.AddressAjax.getAddress(user_id).then(res => {
       console.log(res.data);
       this.addressList = res.data;
-
-
     }).catch(err => {
       console.log(err);
     })
