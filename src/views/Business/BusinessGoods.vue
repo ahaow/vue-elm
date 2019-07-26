@@ -117,12 +117,12 @@
 import Vue from "vue";
 import BScroll from "better-scroll";
 import { mapState, mapMutations } from "vuex";
-import cartcontrol from "./../../components/cartcontrol/cartcontrol";
+// import cartcontrol from "./../../components/cartcontrol/cartcontrol";
 
 export default {
   name: "BusinessGoods",
   components: {
-    cartcontrol
+    // cartcontrol,
   },
   props: {
     shopObj: {
@@ -169,7 +169,6 @@ export default {
       businessList.forEach(item => {
         totalPrice += item.satisfy_rate * item.num;
       });
-      console.log(totalPrice, startPrice);
       return totalPrice >= startPrice;
     },
 
@@ -177,7 +176,6 @@ export default {
       for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i];
         let height2 = this.listHeight[i + 1];
-        console.log(this.scrollY);
         if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
           return i;
         }
@@ -213,7 +211,6 @@ export default {
       }
     },
     selectMenu(index, event) {
-      console.log(index, event);
       if (event.__constructed) {
         return;
       }
@@ -267,7 +264,6 @@ export default {
     },
     // 去结算 跳转到结算页面
     handleGoConfirmOrder() {
-      console.log(this.$props.shopObj.float_delivery_fee)
       this.$router.push({
         path: '/confirmOrder',
         query: {

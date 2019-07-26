@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="nav">
-      <div class="nav-address">星巴克阿德哈斯的哈视频的哈死的。。。。</div>
+      <div class="nav-address">{{address.name}}</div>
       <div class="nav-search">
         <span>搜索饿了么商家、商家名称</span>
       </div>
@@ -110,8 +110,7 @@ export default {
       },
       entryList: [],
       ShopRestaurantsList: [],
-      latitude: 31.22967, // 经度
-      longitude: 121.4762 // 纬度
+      address: {},
     };
   },
   computed: {
@@ -131,8 +130,8 @@ export default {
     },
 
     // 获取商铺列表
-    getShopRestaurants() {
-      this.$api.HomeAjax.shoppingList(this.latitude,this.longitude).then(res => {
+    getShopRestaurants(latitude,longitude) {
+      this.$api.HomeAjax.shoppingList(latitude,longitude).then(res => {
         console.log(res)
         this.ShopRestaurantsList = res.data;
       }).catch(err => {
@@ -154,11 +153,24 @@ export default {
 
     handleEntry(link) {
       console.log(link);
+    },
+
+    //  根据经纬度详细定位
+    geohashAddress(la,lo) {
+      this.$api.HomeAjax.geohashAddress(la,lo).then(res => {
+        console.log(res);
+        this.address = res.data;
+      }).catch(err => {
+        console.log(err);
+      })
     }
   },
   created() {
     this.getEntryList();
-    this.getShopRestaurants();
+    this.getShopRestaurants(this.$route.query.latitude,this.$route.query.longitude);
+    this.geohashAddress(this.$route.query.latitude,this.$route.query.longitude)
+    let str = `${this.$route.query.latitude},${this.$route.query.longitude}`
+    window.localStorage.setItem('geohash',JSON.stringify(str))
   },
   mounted() {
     // this.swiper.slideTo(0, 1000, false)
@@ -179,9 +191,12 @@ export default {
     background-color: $elemColor;
     z-index: 100;
     .nav-address {
+      width: 100%;
       font-size: 18px;
       font-weight: 600;
       color: #fff;
+      text-align: center;
+      @include text-ellipsis;
     }
     .nav-search {
       margin-top: 0.27rem;

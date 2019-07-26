@@ -10,13 +10,30 @@ export default new Router({
     {
       path: '/',
       redirect: {
-        name: 'home'
+        name: 'city'
+      }
+    },
+    {
+      path: '/city',
+      name: 'city',
+      component: () => import(/* webpackChunkName: "about" */ './views/City.vue'),
+      meta: {
+        tabbar: true
+      }
+    },
+    {
+      path: '/cityarea',
+      name: 'cityarea',
+      component: () => import(/* webpackChunkName: "about" */ './views/CityArea.vue'),
+      meta: {
+        tabbar: true
       }
     },
     {
       path: '/home',
       name: 'home',
       component: () => import(/* webpackChunkName: "about" */ './views/Home.vue')
+      
     },
     {
       path: '/business/:id',

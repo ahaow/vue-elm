@@ -7,7 +7,7 @@
       </header>
       <section class="address-list">
         <ul class="deliverable-address">
-          <li v-for="item in addressList" :key="item.id">
+          <li v-for="item in addressList" :key="item.id" @click='handleDeleteAddress(item)'>
             <i class="iconfont icon-xuanzhong"></i>
             <div class="content">
               <header class="header">
@@ -46,11 +46,9 @@ export default {
     },
     handleGoAddaddress() {
       this.$router.push('/chooseAddress/addAddress')
-    }
-  },
-  created() {
-    let user_id = JSON.parse(window.localStorage.getItem("id"));
-    if (user_id) {
+    },
+    // 获取所有地址
+    getAddress(user_id) {
       this.$api.AddressAjax.getAddress(user_id)
         .then(res => {
           console.log(res.data);
@@ -59,8 +57,36 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+
+    // 删除地址
+    handleDeleteAddress(item) {
+      console.log(item);
+      let user_id = JSON.parse(window.localStorage.getItem("id"));
+      let address_id = item.id;
+      let r = confirm('确定删除吗?');
+      if(r) {
+        console.log('ccc');
+        this.$api.AddressAjax.deleteAddress(user_id,address_id).then(res => {
+          console.log(res)
+          if(res.data.status === 1) {
+             this.getAddress(user_id);
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+    }
+  },
+  created() {
+    let user_id = JSON.parse(window.localStorage.getItem("id"));
+    if (user_id) {
+      this.getAddress(user_id);
       return;
     }
+  },
+  updated() {
+    console.log(1);
   },
   mounted() {
     this.$refs.address.style.height = window.screen.height + "px";

@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     handleBack() {
-      this.$router.replace("/home");
+      this.$router.back();
     },
     getShopDetail(id) {
       this.$api.BusinessAjax.getShopDetal(id)

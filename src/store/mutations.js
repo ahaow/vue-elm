@@ -10,15 +10,11 @@ export default {
         food, // 商品信息
     }) {
         let cart = state.cartList;
-        // console.log(businessId)
-        // console.log(cart)
         let shop = (cart[businessId] = cart[businessId] || {});
         let category = (shop[itemid] = shop[itemid] || {});
         if (category[foodid]) {
             category[foodid]["num"]++;
         } else {
-            // console.log(shop);
-            // console.log(category);
             if (category[foodid]) {
                 category[foodid]["num"]++;
             } else {
@@ -39,7 +35,7 @@ export default {
         businessId, // 商家ID
         itemid, // 左侧菜单ID
         foodid, // 商品ID
-        food, // 商品信息
+        // food, // 商品信息
     }) {
 
         let cart = state.cartList;
@@ -47,7 +43,6 @@ export default {
         let category = (shop[itemid] = shop[itemid] || {});
         if (category && category[foodid]) {
             if (category[foodid]['num'] > 0) {
-                // console.log(category[foodid]);
                 category[foodid]['num']--;
                 state.cartList = { ...cart };
                 setStore('buyCart', state.cartList);
@@ -77,7 +72,6 @@ export default {
                     let item = businessItem[k]
                     for (let v in item) {
                         businessList.push(item[v])
-                        console.log(businessList)
                         businessList.map(item => {
                             if (item.num >= 1) {
                                 return arr.push(item)
