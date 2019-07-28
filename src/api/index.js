@@ -7,6 +7,7 @@ import UserAjax from './api_user';
 import BusinessAjax from './api_business';
 import AddressAjax from './api_addresses';
 import CityAjax from './api_city';
+import OrderAjax from './api_order';
 const api = {
     HomeAjax,
     SearchAjax,
@@ -14,7 +15,8 @@ const api = {
     UserAjax,
     BusinessAjax,
     AddressAjax,
-    CityAjax
+    CityAjax,
+    OrderAjax
 }
 
 export default api;
