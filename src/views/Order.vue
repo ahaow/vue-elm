@@ -5,9 +5,11 @@
     </header>
     <div ref="orderList" class="order-box">
       <ul class="order-list">
-        <li class="order-item" 
+        <router-link class="order-item" 
             v-for="item in order_list"
             :key="item.id"
+            tag='li'
+            to='/order/orderDetail'
         >
           <img :src="'http://elm.cangdu.org/img/'+ item.restaurant_image_url" alt='logo' />
           <section class="order-item-right">
@@ -28,13 +30,11 @@
               <span>再来一单</span>
             </div>
           </section>
-        </li>
-        
-       
-        
-      
-      
+        </router-link>
       </ul>
+    </div>
+    <div>
+      <router-view></router-view>
     </div>
   </div>
 </template>

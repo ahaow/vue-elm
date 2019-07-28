@@ -101,8 +101,17 @@ export default new Router({
     {
       path: '/order',
       name: 'order',
-      component: () => import('./views/Order.vue')
+      component: () => import('./views/Order.vue'),
+      children: [{
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: () => import('./views/OrderDetail.vue'),
+        meta: {
+          tabbar: true
+        }
+      }]
     },
+   
     {
       path: '/user',
       name: 'user',
