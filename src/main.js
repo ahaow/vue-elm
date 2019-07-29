@@ -15,6 +15,22 @@ Vue.use(VueLazyload,{
 Vue.prototype.$api = api;
 Vue.config.productionTip = false
 
+// 路由导航守卫
+router.beforeEach(function (to, from, next) {
+  /**
+   * 当用户跳转到 order , search , user 这三个页面的时候 , 验证是否登录过，如果没有登录 就跳转到 login 页面 让他登录
+   */
+  const nextRoute = [ 'order', 'search', 'user'];  
+  if (nextRoute.indexOf(to.name) >= 0) {
+      //未登录
+      if(!window.localStorage.getItem('id')) {
+        router.push({name: 'login'})
+      }
+  }
+  next();
+});
+
+
 
 new Vue({
   router,

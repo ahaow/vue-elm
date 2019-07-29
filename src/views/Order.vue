@@ -1,7 +1,7 @@
 <template>
   <div class="order">
     <header class="order-header">
-      订单详情
+      订单列表
     </header>
     <div ref="orderList" class="order-box">
       <ul class="order-list">
@@ -9,7 +9,7 @@
             v-for="item in order_list"
             :key="item.id"
             tag='li'
-            to='/order/orderDetail'
+            :to='"/order/orderDetail?id=" + item.id'
         >
           <img :src="'http://elm.cangdu.org/img/'+ item.restaurant_image_url" alt='logo' />
           <section class="order-item-right">
@@ -24,7 +24,7 @@
             </div>
             <div class="order-basket">
               <span class="order-basket-name">ds 等2件商品</span>
-              <span class="order-basket-price">¥{{item.total_amount}}</span>
+              <span class="order-basket-price">¥{{totaltoFixed(item)}}</span>
             </div>
             <div class="order-again">
               <span>再来一单</span>
@@ -34,7 +34,9 @@
       </ul>
     </div>
     <div>
-      <router-view></router-view>
+      <transition name='orderFade'>
+        <router-view></router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -49,6 +51,9 @@ export default {
           order_list: [], // 订单列表
       }
   },
+  computed: {
+    
+  },
   methods: {
       getOrderList(id) {
         this.$api.OrderAjax.getOrderList(id).then(res => {
@@ -61,6 +66,9 @@ export default {
         }).catch(err => {
             console.log(err);
         })
+      },
+      totaltoFixed(item) {
+        return Number(item.total_amount).toFixed(2);
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.orderList, {
@@ -76,7 +84,34 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
+
+.orderFade-enter {
+  opacity: 0;
+  transform: translate3d(100%,0,0);
+}
+.orderFade-enter-active {
+  transition: all .4s ease;
+}
+.orderFade-enter-to {
+  transform: translate3d(0,0,0);
+  opacity: 1;
+
+}
+.orderFade-leave {
+  transform: translate3d(0,0,0);
+  opacity: 1;
+}
+.orderFade-leave-active {
+  transition: all .4s ease;
+}
+.orderFade-leave-to {
+  transform: translate3d(100%,0,0);
+  opacity: 0;
+}
+
+
+
 @import "./../assets/scss/utils.scss";
 .order {
   .order-header {

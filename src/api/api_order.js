@@ -6,8 +6,8 @@ const OrderAjax = {
         return axios.get(`https://elm.cangdu.org/bos/v2/users/${id}/orders?limit=10&offset=0`);
     },
     // 32、订单详情
-    getOderDetail(id) {
-        return axios.get(`https://elm.cangdu.org/bos/v1/users/${id}/orders/1/snapshot`);
+    getOderDetail(userid,orderid) {
+        return axios.get(`https://elm.cangdu.org/bos/v1/users/${userid}/orders/${orderid}/snapshot`);
     }
 }
 

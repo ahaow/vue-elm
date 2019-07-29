@@ -111,11 +111,26 @@ export default new Router({
         }
       }]
     },
-   
     {
       path: '/user',
       name: 'user',
       component: () => import('./views/User.vue')
+    },
+    {
+      path: '/info',
+      name: 'info',
+      component: () => import('./views/Info/Info.vue'),
+      meta: {
+        tabbar: true
+      },
+      children: [{
+        path: 'setname',
+        name: 'setname',
+        component: () => import('./views/Info/SetName.vue'),
+        meta: {
+          tabbar: true
+        }
+      }]
     },
     {
       path: '/login',

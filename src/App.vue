@@ -28,7 +28,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 // .view-enter-active, .view-leave-active {
 //   transition: opacity 2s ease-in;
 // }
