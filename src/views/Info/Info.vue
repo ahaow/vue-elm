@@ -27,10 +27,10 @@
         <i class="iconfont icon-right"></i>
       </section>
       <div class="info-box">安全设置</div>
-      <section class="info-section">
+      <router-link tag="section" to='/info/setpsw' class="info-section">
         <span>登录密码</span>
         <i class="iconfont icon-right"></i>
-      </section>
+      </router-link>
 
       <div class="login-out">退出登录</div>
     </div>

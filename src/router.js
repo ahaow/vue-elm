@@ -130,6 +130,13 @@ export default new Router({
         meta: {
           tabbar: true
         }
+      },{
+        path: 'setpsw',
+        name: 'setpsw',
+        component: () => import('./views/Info/SetPsw.vue'),
+        meta: {
+          tabbar: true
+        }
       }]
     },
     {
