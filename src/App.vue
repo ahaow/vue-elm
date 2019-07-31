@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view />
+    <keep-alive v-if='!$route.meta.noKeepAlive'>
+      <router-view />
+    </keep-alive>
+    <router-view v-if='$route.meta.noKeepAlive' />
     <Tabbar v-if="show" />
   </div>
 </template>
@@ -12,14 +15,21 @@ export default {
   name: "tabbar",
   data() {
     return {
-      show: true
+      show: true,
+      include: []
     };
+  },
+  watch: {
+    $route(to,from) {
+      console.log(to);
+      console.log(from);
+    }
   },
   components: {
     Tabbar
   },
   beforeUpdate() {
-    if (this.$router.history.current.meta.tabbar) {
+    if (this.$route.meta.tabbar) {
       this.show = false;
     } else {
       this.show = true;
@@ -27,14 +37,5 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scope>
-// .view-enter-active, .view-leave-active {
-//   transition: opacity 2s ease-in;
-// }
-// .view-enter, .view-leave-to {
-//   opacity: 0;
-// }
-</style>
 
 

@@ -16,7 +16,7 @@ export default new Router({
     {
       path: '/city',
       name: 'city',
-      component: () => import(/* webpackChunkName: "about" */ './views/City.vue'),
+      component: () => import('./views/City.vue'),
       meta: {
         tabbar: true
       }
@@ -24,7 +24,7 @@ export default new Router({
     {
       path: '/cityarea',
       name: 'cityarea',
-      component: () => import(/* webpackChunkName: "about" */ './views/CityArea.vue'),
+      component: () => import('./views/CityArea.vue'),
       meta: {
         tabbar: true
       }
@@ -32,13 +32,13 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      component: () => import(/* webpackChunkName: "about" */ './views/Home.vue')
+      component: () => import('./views/Home.vue')
       
     },
     {
       path: '/business/:id',
       name: 'business',
-      component: () => import(/* webpackChunkName: "about" */ './views/Business/Business.vue'),
+      component: () => import('./views/Business/Business.vue'),
       redirect: {name: 'businessGoods'},
       children: [
         {
@@ -46,26 +46,26 @@ export default new Router({
           name: 'businessGoods',
           component: () => import('./views/Business/BusinessGoods.vue'),
           meta: {
-            tabbar: true
+            tabbar: true,
+            noKeepAlive: true
           }
         }, {
           path: 'businessRatings',
           name: 'businessRatings',
           component: () => import('./views/Business/BusinessRatings.vue'),
           meta: {
-            tabbar: true
+            tabbar: true,
+            noKeepAlive: true
           }
         }, {
           path: 'businessSeller',
           name: 'businessSeller',
           component: () => import('./views/Business/BusinessSeller.vue'),
           meta: {
-            tabbar: true
+            tabbar: true,
+            noKeepAlive: true
           }
         }],
-      meta: {
-        tabbar: true
-      }
     },
     {
       path: '/confirmOrder',
