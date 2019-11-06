@@ -2,8 +2,6 @@
 
 ## 前言
 
-之前在上家公司要求用的是React技术栈，后面出去找工作发现成都几乎都是Vue了，所以想拿个项目来练练手，结果在github上面找到了 这个项目：[**vue2-elm**](https://github.com/bailicangdu/vue2-elm)，刚好这个项目的作者提供了api接口，所以想着就拿这个来练手吧
-
 注： 这个是自己完完全全写的，和 [**vue2-elm**](https://github.com/bailicangdu/vue2-elm) 并没有什么关联，但是 ui 是借鉴了作者的ui布局样式结构，连md说明格式都是借鉴的(啊哈哈233)；
 
 
@@ -106,38 +104,5 @@ router.beforeEach((to,from,next) => {
 })
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
